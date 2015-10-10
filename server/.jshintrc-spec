@@ -2,7 +2,7 @@
   "extends": ".jshintrc",
   "globals": {
     "describe": true,
-    "it": true,
+    "it": false,
     "before": true,
     "beforeEach": true,
     "after": true,
