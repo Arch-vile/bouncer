@@ -1,6 +1,7 @@
 'use strict';
 
 var should = require('should');
+var assert = require('assert');
 var rewire = require('rewire');
 var dao = rewire('./bounce.dao');
 
@@ -11,6 +12,9 @@ function setupMonkMock(err, doc) {
 				collection.should.equal('bounces');
 				return {
 					find: function(search, options, next) {
+						assert.deepEqual(search, {
+							token: "some"
+						});
 						next(err, doc);
 					}
 				};
