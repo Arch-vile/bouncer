@@ -4,7 +4,6 @@ var bounceDao = require('../dao/bounce');
 
 exports.show = function(req, res) {
 	var token = req.params.token;
-	console.error(token);
 
 	bounceDao.findByToken(token, function(err, bounce) {
 		if (err) {
@@ -12,7 +11,7 @@ exports.show = function(req, res) {
 		} else if (!bounce) {
 			return res.status(404).send('Not Found');
 		} else {
-			return res.json(doc[0]);
+			return res.json(bounce[0]);
 		}
 	});
 
