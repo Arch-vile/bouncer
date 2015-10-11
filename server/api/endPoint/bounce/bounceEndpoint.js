@@ -1,6 +1,6 @@
 'use strict';
 
-var bounceDao = require('../dao/bounce');
+var bounceDao = require('../../dao/bounce');
 
 exports.show = function(req, res) {
 	var token = req.params.token;
