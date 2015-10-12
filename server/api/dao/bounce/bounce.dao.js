@@ -16,4 +16,22 @@ exports.findByToken = function(token, next) {
 			next(null, doc[0]);
 		}
 	});
+};
+
+exports.create = function(bounce, next) {
+	bounce.token = createToken();
+	db.getCollection('bounces').insert(bounce, function(err, doc) {
+		if (err) {
+			logger.error("There was a DB error creating new bounce [%s]: %s", bounce, err);
+			next(err);
+		} else {
+			next(null, doc);
+		}
+	});
+};
+
+
+function createToken() {
+	var buf = require('crypto').randomBytes(20);
+	return buf.toString('hex');
 }
