@@ -31,6 +31,9 @@ describe('bounceEndpoint', function() {
 	};
 
 	before(function() {
+		mockery.enable({
+			useCleanCache: true
+		});
 		mockery.enable();
 		mockery.registerMock('../../dao/bounce', daoMock);
 		mockery.registerAllowable('../bounceEndpoint');
