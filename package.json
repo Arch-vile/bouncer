@@ -19,7 +19,6 @@
         "mongoose": "~4.0.3",
         "monk": "^1.0.1",
         "morgan": "~1.0.0",
-        "rewire": "^2.3.4",
         "serve-favicon": "~2.0.1",
         "socket.io": "^1.0.6",
         "socket.io-client": "^1.0.6",
