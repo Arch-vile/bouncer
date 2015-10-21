@@ -20,6 +20,7 @@ exports.findByToken = function(token, next) {
 
 exports.create = function(bounce, next) {
 	bounce.token = createToken();
+	bounce.active = true;
 	db.getCollection('bounces').insert(bounce, function(err, doc) {
 		if (err) {
 			logger.error("There was a DB error creating new bounce [%s]: %s", bounce, err);
