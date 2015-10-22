@@ -51,5 +51,38 @@ exports.create = function(req, res) {
 		}
 	});
 
+	exports.defer = function(req, res) {
+
+		var token = req.body.token;
+		var units = req.body.units;
+		var amount = req.body.amount;
+
+		if (!validator.isLength(token, 40, 40)) {
+			return res.status(400).send('bad token');
+		}
+
+		if (!validator.isIn(units, ["hours", "days", "weeks", "months"])) {
+			return res.status(400).send('Units must be hours,days,weeks or months');
+		}
+
+		if (!validator.isInt(amount, {
+				min: 1,
+				max: 30
+			})) {
+			return res.status(400).send('amount need to be between 1 and 30');
+		}
+
+
+		bounceDao.findByToken(token, function(err, doc) {
+			if (err) {
+				return res.status(500).send('Ouch! Internal error');
+			} else if (!doc) {
+				return res.status(404).send('Bounce not found');
+			}
+
+
+		});
+	};
+
 
 };

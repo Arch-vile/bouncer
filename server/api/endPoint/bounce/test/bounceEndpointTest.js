@@ -9,25 +9,23 @@ var mockery = require('mockery');
 
 describe('bounceEndpoint', function() {
 
+	var response;
+
+	var validToken = '1234567890123456789012345678901234567890';
+
+	var validBounce = {
+		topic: 'some topic',
+		moment: new Date('2016-10-12T22:10:20+03:00'),
+		email: 'john.doe@cia.com',
+		token: validToken
+	}
+
 	var endpoint;
 
 	var daoMock = {
-		err: null,
-		doc: null,
 
-		findByToken: function(token, next) {
-			token.should.equal('theToken');
-			next(this.err, this.doc);
-		},
 
-		create: function(bounce, next) {
-			bounce.should.eql({
-				moment: new Date('2015-10-12T22:10:20+03:00'),
-				topic: 'some topic',
-				email: 'someEmail@email.com'
-			});
-			next(this.err, this.doc);
-		}
+
 	};
 
 	before(function() {
@@ -47,8 +45,9 @@ describe('bounceEndpoint', function() {
 	});
 
 	beforeEach(function() {
-		daoMock.err = null;
-		daoMock.doc = null;
+		daoMock.findByToken = function() {};
+		daoMock.create = function() {};
+		response = httpMocks.createResponse();
 	});
 
 	describe('show()', function() {
@@ -56,35 +55,46 @@ describe('bounceEndpoint', function() {
 		var getRequest = httpMocks.createRequest({
 			method: 'GET',
 			params: {
-				token: 'theToken'
+				token: validToken
 			}
 		});
 
 
 		it('should return bounce as json', function() {
 			// Given: Bounce is returned
-			daoMock.doc = {
-				value: 1
+			daoMock.findByToken = function(token, next) {
+				next(null, validBounce);
 			};
 
 			// When: Requested
-			var response = httpMocks.createResponse();
 			endpoint.show(getRequest, response);
 
 			// Then: 200 status and bounce as JSON
 			response.statusCode.should.equal(200);
-			response._getData().should.eql(JSON.stringify({ 
-				value: 1
-			}));
+			response._getData().should.eql(JSON.stringify(validBounce));
+		});
+
+		it('should use token from request to find the bounce', function() {
+
+			// Given: Correct token is expected
+			daoMock.findByToken = function(token, next) {
+				token.should.equal(validToken);
+			};
+
+			// When: requested
+			endpoint.show(getRequest, response);
+
+			// Then: All ok
 
 		});
 
 		it('should return status 500 if internal error ', function() {
 			// Given: Internal error happens
-			daoMock.err = new Error("Some error");
+			daoMock.findByToken = function(token, next) {
+				next(new Error("some error"));
+			};
 
 			// When: Requested
-			var response = httpMocks.createResponse();
 			endpoint.show(getRequest, response);
 
 			// Then: 500 status is given
@@ -92,11 +102,12 @@ describe('bounceEndpoint', function() {
 		});
 
 		it('should return status 404 if no results', function() {
-			// Given: No docs found
-			daoMock.doc = undefined;
+			/// Given: No docs found
+			daoMock.findByToken = function(token, next) {
+				next(null, null);
+			};
 
 			// When: Requested
-			var response = httpMocks.createResponse();
 			endpoint.show(getRequest, response);
 
 			// Then: 404 status is given
@@ -122,27 +133,25 @@ describe('bounceEndpoint', function() {
 
 		it('should return created as json', function() {
 			// Given: Bounce is created
-			daoMock.doc = {
-				value: 2
+			daoMock.create = function(bounce, next) {
+				next(null, validBounce);
+			};
+
+			// When: Requested
+			endpoint.create(postRequest, response);
+
+			// Then: Created bounce returned as JSON
+			response.statusCode.should.equal(200);
+			response._getData().should.equal(JSON.stringify(validBounce));
+		});
+
+		it('should return status 500 if internal error on dao create', function() {
+			// Given: Internal error happens
+			daoMock.create = function(bounce, next) {
+				next(new Error(""));
 			};
 
 			// When: POST is requested
-			var response = httpMocks.createResponse();
-			endpoint.create(postRequest, response);
-
-			// Then: New bounce is created
-			response.statusCode.should.equal(200);
-			response._getData().should.equal(JSON.stringify({
-				value: 2
-			}));
-		});
-
-		it('should return status 500 if internal error', function() {
-			// Given: Internal error happens
-			daoMock.err = new Error("som error");
-
-			// When: POST is requested
-			var response = httpMocks.createResponse();
 			endpoint.create(postRequest, response);
 
 			// Then: Status 500 returned
@@ -154,7 +163,6 @@ describe('bounceEndpoint', function() {
 			postRequest.body.email = 'nonsense';
 
 			// When: Requested
-			var response = httpMocks.createResponse();
 			endpoint.create(postRequest, response);
 
 			// Then:
@@ -166,22 +174,115 @@ describe('bounceEndpoint', function() {
 			postRequest.body.topic = 'a';
 
 			// When: Requested
-			var response = httpMocks.createResponse();
 			endpoint.create(postRequest, response);
 
 			// Then:
 			response.statusCode.should.equal(400);
 		});
 
-		it('it should return status 400 for invalid moment', function() {
+		it('should return status 400 for invalid moment', function() {
 			// Given: Request with illegal email
 			postRequest.body.moment = 'a';
 
 			// When: Requested
-			var response = httpMocks.createResponse();
 			endpoint.create(postRequest, response);
 
 			// Then:
+			response.statusCode.should.equal(400);
+		});
+
+	});
+
+
+	describe('defer()', function() {
+
+		var putRequest;
+
+		beforeEach(function() {
+			putRequest = httpMocks.createRequest({
+				method: 'PUT',
+				body: {
+					units: 'days',
+					amount: 1,
+					token: validToken
+				}
+			});
+
+		});
+
+
+		it('should return status 400 for invalid token', function() {
+
+			// Given: the request with invalid token
+			putRequest.body.token = 'invalid';
+
+			// When: Deferred
+			endpoint.defer(putRequest, response);
+
+			// Then: Status 400 returned
+			response.statusCode.should.equal(400);
+
+		});
+
+		it('should fetch with token from request', function() {
+
+			// Expect: token from request is used
+			daoMock.findByToken = function(token, next) {
+				token.should.equal(validToken);
+			};
+
+			// When: Deferred 
+			endpoint.defer(putRequest, response);
+
+		});
+
+		it('should return status 500 if internal error finding the bounce', function() {
+
+			// Given: Internal error when finding the bounce
+			daoMock.findByToken = function(token, next) {
+				next(new Error(""));
+			};
+
+			// When: Deferred
+			endpoint.defer(putRequest, response);
+
+			// Then: Status 500 is returned
+			response.statusCode.should.equal(500);
+
+		});
+
+		it('should return status 404 if bounce is not found', function() {
+			// Given: Bounce is not found by token
+			daoMock.findByToken = function(token, next) {
+				next(null, null);
+			};
+
+			// When: Deferred
+			endpoint.defer(putRequest, response);
+
+			// Then: Status 404 is returned
+			response.statusCode.should.equal(404);
+		});
+
+		it('should return status 400 if invalid time unit', function() {
+			// Given: The units parameter with invalid value
+			putRequest.body.units = 'splitSecond';
+
+			// When: Deferred
+			endpoint.defer(putRequest, response);
+
+			// Then: Status 404 is returned
+			response.statusCode.should.equal(400);
+		});
+
+		it('should return status 400 if unit count not a number', function() {
+			// Given: The units parameter with invalid value
+			putRequest.body.amount = 'many';
+
+			// When: Deferred
+			endpoint.defer(putRequest, response);
+
+			// Then: Status 404 is returned
 			response.statusCode.should.equal(400);
 		});
 
