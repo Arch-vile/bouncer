@@ -6,34 +6,24 @@ var mockery = require('mockery');
 
 describe('bounce.dao', function() {
 
+	var validBounce = {
+		topic: 'some topic',
+		moment: new Date('2016-10-12T22:10:20+03:00'),
+		email: 'john.doe@cia.com',
+		token: '1234567890123456789012345678901234567890'
+	}
+
 	var bounceDao;
 
+	var collectionMock = {
+		find: function(search, options, next) {},
+		insert: function(toCreate, next) {}
+	};
+
 	var dbMock = {
-
-		err: null,
-		doc: null,
-
 		getCollection: function(collection) {
-			var myParent = this;
-
 			collection.should.equal('bounces');
-
-
-			return {
-				find: function(search, options, next) {
-					search.should.eql({
-						token: "some"
-					});
-					options.should.eql({});
-					next(myParent.err, myParent.doc);
-				},
-
-				insert: function(toCreate, next) {
-					toCreate.token.should.have.length(40);
-					toCreate.active.should.equal(true);
-					next(myParent.err, myParent.doc);
-				}
-			};
+			return collectionMock;
 		}
 	};
 
@@ -44,6 +34,7 @@ describe('bounce.dao', function() {
 		mockery.enable();
 		mockery.registerMock('../db', dbMock);
 		mockery.registerAllowable('log4js');
+		mockery.registerAllowable('crypto');
 		mockery.registerAllowable('../bounce.dao');
 		bounceDao = require('../bounce.dao');
 	});
@@ -53,47 +44,90 @@ describe('bounce.dao', function() {
 	});
 
 	beforeEach(function() {
-		dbMock.err = null;
-		dbMock.doc = null;
+		collectionMock.find = function(search, options, next) {};
+		collectionMock.insert = function(toCreate, next) {};
 	});
 
 
 	describe('findByToken()', function() {
 
-		it('should return doc if single found', function() {
+		it('should search by token', function() {
+			// Given: Search term and options captured
+			var search;
+			var options;
+			collectionMock.find = function(_search, _options, next) {
+				search = _search;
+				options = _options;
+			};
 
-			dbMock.doc = [{
-				value: 1
-			}];
+			// When: Searched
+			bounceDao.findByToken('myToken', function(err, doc) {});
 
-			bounceDao.findByToken('some', function(err, doc) {
-				should.not.exist(err);
-				doc.should.eql({
-					value: 1
-				});
+			// Then: Token used in search 
+			search.should.eql({
+				token: 'myToken'
 			});
+
+			// And: No options
+			options.should.eql({});
+		});
+
+		it('should return doc if single found', function() {
+			// Given: One doc is found in collection
+			collectionMock.find = function(search, options, next) {
+				next(null, [validBounce]);
+			};
+
+			// When: Doc is searched
+			var doc;
+			var err;
+			bounceDao.findByToken('any', function(_err, _doc) {
+				doc = _doc;
+				err = _err;
+			});
+
+			// Then: Found bunce is returned without errors
+			should.not.exist(err);
+			doc.should.eql(validBounce);
 
 		});
 
 		it('should return error if more then one match', function() {
 
-			dbMock.doc = [{}, {}];
+			// Given: Multiple matches
+			collectionMock.find = function(search, options, next) {
+				next(null, [{}, {}]);
+			};
 
-			bounceDao.findByToken('some', function(err, doc) {
-				should.exist(err);
-				should.not.exist(doc);
+			// When: Searched
+			var err, doc;
+			bounceDao.findByToken('any', function(_err, _doc) {
+				err = _err;
+				doc = _doc;
 			});
 
+			// Then: Error returned
+			should.exist(err);
+			should.not.exist(doc);
 		});
 
 		it('should return error if db error', function() {
 
-			dbMock.err = new Error("some error");
+			// Given: Error on find
+			collectionMock.find = function(search, options, next) {
+				next(new Error("some"));
+			};
 
-			bounceDao.findByToken('some', function(err, doc) {
-				should.exist(err);
-				should.not.exist(doc);
+			// When: Searched
+			var err, doc;
+			bounceDao.findByToken('some', function(_err, _doc) {
+				err = _err;
+				doc = _doc;
 			});
+
+			// Then: Error returned
+			should.exist(err);
+			should.not.exist(doc);
 
 		});
 
@@ -101,28 +135,43 @@ describe('bounce.dao', function() {
 
 	describe('create()', function() {
 
-		it('should forward created bounce', function() {
+		it('should return created bounce', function() {
 
-			dbMock.doc = {
-				value: 1
+			// Given: insert is successfull
+			collectionMock.insert = function(toCreate, next) {
+				next(null, validBounce);
 			};
 
-			bounceDao.create({}, function(err, doc) {
-				doc.should.eql(dbMock.doc);
+			// When: Created
+			var err, doc;
+			bounceDao.create({}, function(_err, _doc) {
+				err = _err;
+				doc = _doc;
 			});
+
+			// Then: created bounce returned
+			should.not.exist(err);
+			doc.should.eql(validBounce);
 
 		});
 
 		it('should return error if db error', function() {
 
-			dbMock.err = new Error("some error");
+			// Given: insert fails
+			collectionMock.insert = function(toCreate, next) {
+				next(new Error("some"));
+			};
 
-			bounceDao.create({},
-				function(err, doc) {
-					should.not.exist(doc);
-					should.exist(err);
+			// When: Created
+			var err, doc;
+			bounceDao.create({}, function(_err, _doc) {
+				err = _err;
+				doc = _doc;
+			});
 
-				});
+			// Then: error returned
+			should.exist(err);
+			should.not.exist(doc);
 		});
 
 	});

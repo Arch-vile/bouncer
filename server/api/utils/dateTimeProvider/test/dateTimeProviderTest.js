@@ -6,20 +6,50 @@ var dateTimeProvider = require('../');
 
 describe('dataTimeProvider', function() {
 
-	describe('currentDateTime', function() {
+	dateTimeProvider.currentDateTime = function() {
+		return new Date('2016-12-31T21:10:20+03:00');
+	}
 
-		// Miserable test but will do for now
-		it('should return current date and time', function() {
-			// Given: time just now
-			var earlier = new Date();
+	describe('defer', function() {
 
-			// When: datatime is requested
-			var dateTime = dateTimeProvider.currentDateTime();
+		it('should defer by hours', function() {
 
-			// Then: It is after earlier but before current
-			var current = new Date();
-			assert(earlier <= dateTime);
-			assert(current >= dateTime);
+			// When: defer by two hours
+			var date = dateTimeProvider.defer(2, 'hours');
+
+			// Then: correctly deferred
+			assert(date.valueOf() === new Date('2016-12-31T23:10:20+03:00').valueOf());
+
+		});
+
+		it('should defer by days', function() {
+
+			// When: defer by one day
+			var date = dateTimeProvider.defer(1, 'days');
+
+			// Then: correctly deferred
+			assert(date.valueOf() === new Date('2017-01-01T21:10:20+03:00').valueOf());
+
+		});
+
+		it('should defer by weeks', function() {
+
+			// When: defer by one day
+			var date = dateTimeProvider.defer(3, 'weeks');
+
+			// Then: correctly deferred
+			assert(date.valueOf() === new Date('2017-01-21T21:10:20+03:00').valueOf());
+
+		});
+
+		it('should defer by months', function() {
+
+			// When: defer by one day
+			var date = dateTimeProvider.defer(1, 'months');
+
+			// Then: correctly deferred
+			assert(date.valueOf() === new Date('2017-01-31T21:10:20+03:00').valueOf());
+
 		});
 
 

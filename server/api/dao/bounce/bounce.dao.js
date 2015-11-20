@@ -8,7 +8,7 @@ exports.findByToken = function(token, next) {
 		token: token
 	}, {}, function(err, doc) {
 		if (err) {
-			logger.error("There was a DB problem getting bounce by token [%s]: %s", token, err);
+			logger.error("There was a DB problem getting bounce by token [%s]: %s", token, JSON.stringify(err));
 			next(new Error("Techinal DB error"));
 		} else if (doc.length > 1) {
 			next(new Error("More then one match"));
@@ -19,20 +19,12 @@ exports.findByToken = function(token, next) {
 };
 
 exports.create = function(bounce, next) {
-	bounce.token = createToken();
-	bounce.active = true;
 	db.getCollection('bounces').insert(bounce, function(err, doc) {
 		if (err) {
-			logger.error("There was a DB error creating new bounce [%s]: %s", bounce, err);
+			logger.error("There was a DB error creating new bounce [%s]: %s", JSON.stringify(bounce), JSON.stringify(err));
 			next(err);
 		} else {
 			next(null, doc);
 		}
 	});
 };
-
-
-function createToken() {
-	var buf = require('crypto').randomBytes(20);
-	return buf.toString('hex');
-}

@@ -13,19 +13,16 @@ describe('bounceEndpoint', function() {
 
 	var validToken = '1234567890123456789012345678901234567890';
 
-	var validBounce = {
-		topic: 'some topic',
-		moment: new Date('2016-10-12T22:10:20+03:00'),
-		email: 'john.doe@cia.com',
-		token: validToken
-	}
+	var validBounce;
 
 	var endpoint;
 
-	var daoMock = {
+	var daoMock = {};
 
-
-
+	var dateTimeMock = {
+		currentDateTime: function() {
+			return new Date('2016-12-31T22:10:20+03:00');
+		}
 	};
 
 	before(function() {
@@ -34,6 +31,7 @@ describe('bounceEndpoint', function() {
 		});
 		mockery.enable();
 		mockery.registerMock('../../dao/bounce', daoMock);
+		mockery.registerMock('../../utils/dateTimeProvider', dateTimeMock);
 		mockery.registerAllowable('../bounceEndpoint');
 		mockery.registerAllowable('validator');
 		mockery.registerAllowable('querystring');
@@ -48,6 +46,13 @@ describe('bounceEndpoint', function() {
 		daoMock.findByToken = function() {};
 		daoMock.create = function() {};
 		response = httpMocks.createResponse();
+
+		validBounce = {
+			topic: 'some topic',
+			moment: new Date('2016-10-12T22:10:20+03:00'),
+			email: 'john.doe@cia.com',
+			token: validToken
+		};
 	});
 
 	describe('show()', function() {
@@ -131,6 +136,38 @@ describe('bounceEndpoint', function() {
 		});
 
 
+		it('should set bounce active', function() {
+
+			// Given: Bounce to create is catched
+			var bounce;
+			daoMock.create = function(_bounce, next) {
+				bounce = _bounce;
+			};
+
+			// When: Requested
+			endpoint.create(postRequest, response);
+
+			// Then: Bounce is set active
+			bounce.active.should.equal(true);
+
+		});
+
+		it('should assign token', function() {
+
+			// Given: Bounce to create is catched
+			var bounce;
+			daoMock.create = function(_bounce, next) {
+				bounce = _bounce;
+			};
+
+			// When: Requested
+			endpoint.create(postRequest, response);
+
+			// Then: Bounce is set active
+			bounce.token.should.have.length(40);
+
+		});
+
 		it('should return created as json', function() {
 			// Given: Bounce is created
 			daoMock.create = function(bounce, next) {
@@ -203,7 +240,7 @@ describe('bounceEndpoint', function() {
 				method: 'PUT',
 				body: {
 					units: 'days',
-					amount: 1,
+					amount: 2,
 					token: validToken
 				}
 			});
@@ -226,13 +263,17 @@ describe('bounceEndpoint', function() {
 
 		it('should fetch with token from request', function() {
 
-			// Expect: token from request is used
-			daoMock.findByToken = function(token, next) {
-				token.should.equal(validToken);
+			// Given: Spy the token
+			var token;
+			daoMock.findByToken = function(_token, next) {
+				token = _token;
 			};
 
 			// When: Deferred 
 			endpoint.defer(putRequest, response);
+
+			// Then: Token should be from request
+			token.should.equal(validToken);
 
 		});
 
@@ -284,6 +325,40 @@ describe('bounceEndpoint', function() {
 
 			// Then: Status 404 is returned
 			response.statusCode.should.equal(400);
+		});
+
+
+		it('should update with deferred time', function() {
+
+			// Given: Bounce is found
+			daoMock.findByToken = function(token, next) {
+				next(null, validBounce);
+			};
+
+			// Given: Deferred dateTime
+			dateTimeMock.defer = function(amount, units) {
+				assert.equal(amount, 2);
+				assert.equal(units, 'days');
+				return new Date('2017-10-22T22:10:20+03:00');
+			}
+
+			// Given: Spy updated bounce
+			var deferred;
+			daoMock.update = function(toDefer, next) {
+				deferred = toDefer;
+				return next(null, toDefer);
+			};
+
+			// When: Deferred
+			endpoint.defer(putRequest, response);
+
+			// Then: Moment of the updated bounce should be deferred
+			assert.equal(deferred.moment.valueOf(), new Date('2017-10-22T22:10:20+03:00').valueOf());
+
+			// And: Updated bounce returned as JSON
+			response.statusCode.should.equal(200);
+			response._getData().should.equal(JSON.stringify(deferred));
+
 		});
 
 	});

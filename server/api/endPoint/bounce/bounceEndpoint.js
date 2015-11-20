@@ -2,6 +2,7 @@
 
 var validator = require('validator');
 var bounceDao = require('../../dao/bounce');
+var dateTimeProvider = require('../../utils/dateTimeProvider');
 
 exports.show = function(req, res) {
 	var token = req.params.token;
@@ -39,7 +40,9 @@ exports.create = function(req, res) {
 	var bounce = {
 		moment: new Date(moment),
 		topic: topic,
-		email: email
+		email: email,
+		active: true,
+		token: createToken()
 	};
 
 	bounceDao.create(bounce, function(err, created) {
@@ -50,39 +53,52 @@ exports.create = function(req, res) {
 			return res.json(created);
 		}
 	});
+};
 
-	exports.defer = function(req, res) {
 
-		var token = req.body.token;
-		var units = req.body.units;
-		var amount = req.body.amount;
+exports.defer = function(req, res) {
 
-		if (!validator.isLength(token, 40, 40)) {
-			return res.status(400).send('bad token');
+	var token = req.body.token;
+	var units = req.body.units;
+	var amount = req.body.amount;
+
+	if (!validator.isLength(token, 40, 40)) {
+		return res.status(400).send('bad token');
+	}
+
+	if (!validator.isIn(units, ["hours", "days", "weeks", "months"])) {
+		return res.status(400).send('Units must be hours,days,weeks or months');
+	}
+
+	if (!validator.isInt(amount, {
+			min: 1,
+			max: 30
+		})) {
+		return res.status(400).send('amount needs to be between 1 and 30');
+	}
+
+
+	bounceDao.findByToken(token, function(err, doc) {
+		if (err) {
+			return res.status(500).send('Ouch! Internal error');
+		} else if (!doc) {
+			return res.status(404).send('Bounce not found');
 		}
 
-		if (!validator.isIn(units, ["hours", "days", "weeks", "months"])) {
-			return res.status(400).send('Units must be hours,days,weeks or months');
-		}
-
-		if (!validator.isInt(amount, {
-				min: 1,
-				max: 30
-			})) {
-			return res.status(400).send('amount need to be between 1 and 30');
-		}
-
-
-		bounceDao.findByToken(token, function(err, doc) {
+		doc.moment = dateTimeProvider.defer(amount, units).valueOf();
+		bounceDao.update(doc, function(err, updated) {
 			if (err) {
 				return res.status(500).send('Ouch! Internal error');
-			} else if (!doc) {
-				return res.status(404).send('Bounce not found');
 			}
 
-
+			return res.json(updated);
 		});
-	};
 
-
+	});
 };
+
+
+function createToken() {
+	var buf = require('crypto').randomBytes(20);
+	return buf.toString('hex');
+}
