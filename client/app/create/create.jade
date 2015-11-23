@@ -7,7 +7,7 @@ form.form-horizontal(role="form", name="newBounceForm",novalidate, ng-submit="su
 				h4 Just provide the required stuff below and you are almost done!
 
 
-		.row.col-lg-12.text-center.alert.alert-danger(ng-show="newBounceForm.hadErrors")
+		.row.col-lg-12.text-center.alert.alert-danger(ng-show="newBounceForm.hadErrors && newBounceForm.$invalid")
 			span Bummer, you utterly failed
 
 		.row.form-group
@@ -50,6 +50,6 @@ form.form-horizontal(role="form", name="newBounceForm",novalidate, ng-submit="su
 
 		.row
 			.col-sm-8.col-sm-offset-4
-				button.btn-primary.btn(type="button") Set bounce for {{calculateMoment()}}
+				button.btn-primary.btn(type="submit") Set bounce for {{calculateMoment()}}
 	
 
