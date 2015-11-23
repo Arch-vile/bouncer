@@ -6,14 +6,11 @@ angular.module('bouncerApp')
 		socket.syncUpdates('zeta', $scope.foo);
 		$http.get('/api/things');
 
+
 		$scope.submit = function() {
-			console.log("in submit function")
+			$scope.newBounceForm.hadErrors = $scope.newBounceForm.$invalid;
 			if ($scope.newBounceForm.$valid) {
-				// Submit as normal
-				console.log("is valid")
-			} else {
-				console.log("not valid")
-				$scope.newBounceForm.submitted = true;
+
 			}
 		};
 
