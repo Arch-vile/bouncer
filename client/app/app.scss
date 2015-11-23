@@ -4,6 +4,8 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import 'font-awesome/scss/font-awesome';
 
+@import 'bootstrap_extension';
+
 /**
  * App-wide Styles
  */
@@ -15,8 +17,12 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
     padding: 0.2em 0;
 }
 
+
+
 // Component styles are injected through grunt
 // injector
+@import 'bootstrap_extension.scss';
 @import 'main/main.scss';
 @import 'modal/modal.scss';
 // endinjector
+

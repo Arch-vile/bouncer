@@ -11,7 +11,7 @@ form.form-horizontal(role="form", name="newBounceForm",novalidate, ng-submit="su
 			span Bummer, you utterly failed
 
 		.row.form-group
-			.col-sm-2
+			.col-sm-3.text-sm-right.col-sm-offset-1
 				label.control-label Remind me in:
 			.col-sm-5
 				select.form-control(name="durationAmount")
@@ -22,7 +22,7 @@ form.form-horizontal(role="form", name="newBounceForm",novalidate, ng-submit="su
 						option(value="#{unit}", ng-model="bounce.units") #{unit}
 
 		.row.form-group(ng-class="{'has-error': newBounceForm.hadErrors && newBounceForm.topic.$invalid}")
-			.col-sm-2
+			.col-sm-3.text-sm-right.col-sm-offset-1
 				label.control-label(for="topic") Remind me of:
 			.col-sm-5
 				input.form-control(.
@@ -37,7 +37,7 @@ form.form-horizontal(role="form", name="newBounceForm",novalidate, ng-submit="su
 		
 		
 		.row.form-group(ng-class="{'has-error': newBounceForm.hadErrors && newBounceForm.email.$invalid}")
-			.col-sm-2
+			.col-sm-3.text-sm-right.col-sm-offset-1
 				label.control-label(for="email") Remind me to:
 			.col-sm-5
 				input.form-control(.
@@ -48,9 +48,8 @@ form.form-horizontal(role="form", name="newBounceForm",novalidate, ng-submit="su
 					required)
 				span.help-block(ng-show="newBounceForm.hadErrors && newBounceForm.email.$invalid") Invalid email
 
-		h3 Your bounce will be set for				
-		h2: strong#bounceTimer xxx
-
-		<button type="submit" class="button radius">Submit</button>
+		.row
+			.col-sm-10.col-sm-offset-3
+				<button type="submit" class="button radius">Set bounce on {{target}}</button>
 	
 
