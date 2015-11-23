@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="640" height="480" viewbox="0 0 640 480" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+
+ <g>
+  <title>Layer 1</title>
+  <circle fill="#6c2a6a" stroke="#000000" stroke-width="5" cx="320" cy="228" r="202.949219" id="svg_1"/>
+  <circle fill="#000000" stroke="#ffffff" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" cx="144" cy="131" r="34.015625" id="svg_15" fill-opacity="0"/>
+  <circle fill="#000000" stroke="#ffffff" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" cx="267" cy="410" r="11.179688" id="svg_19" fill-opacity="0"/>
+  <path fill="#FF0000" stroke="#000000" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0" d="m175,125c82.666687,-20 127.333313,280 119,294c-8.333313,14 78,-168.333344 181,-35" id="svg_24"/>
+  <circle fill="#000000" stroke="#ffffff" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" cx="237" cy="279" r="24.414063" id="svg_27"/>
+  <circle fill="#000000" stroke="#ffffff" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" cx="259" cy="357" r="17.261719" id="svg_30"/>
+  <circle fill="#000000" stroke="#ffffff" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" cx="200.499999" cy="198.5" r="28.425781" id="svg_26"/>
+  <circle fill="#000000" stroke="#ffffff" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" cx="312" cy="375" r="17.261719" id="svg_31"/>
+  <circle fill="#000000" stroke="#ffffff" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" cx="377" cy="356" r="24.414063" id="svg_32"/>
+ </g>
+</svg>
