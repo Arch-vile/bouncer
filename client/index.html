@@ -27,7 +27,9 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div ui-view=""></div>
+    <div ui-view></div>
+    <a ui-sref="create">create</a><br/>
+    <a ui-sref="main">main</a><br/>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
     <script>
@@ -64,6 +66,8 @@
         
         <script src="app/app.js"></script>
           <!-- injector:js -->
+          <script src="app/create/create.controller.js"></script>
+          <script src="app/create/create.js"></script>
           <script src="app/main/main.controller.js"></script>
           <script src="app/main/main.js"></script>
           <script src="components/modal/modal.service.js"></script>

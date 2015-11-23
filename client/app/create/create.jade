@@ -1,0 +1,36 @@
+div(ng-include='"components/navbar/navbar.html"')
+p {{foo}}
+form#formNewBouncer.form-horizontal(role="form", name="newBounceForm",novalidate, ng-submit="submit()")
+	h1 Create your own Bounce
+	h4 Just provide the required stuff below and you are almost done!
+
+	div(ng-show="newBounceForm.$invalid && newBounceForm.submitted")
+		span "Bummer, you utterly failed:"
+
+	div.form-group
+		label.control-label Remind me in:
+		select#durationAmount.form-control(name="durationAmount")
+			each amount in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+				option(value="#{amount}", ng-model="bounce.amount") #{amount}
+		
+		select#durationUnit.form-control(name="durationUnit")
+			each unit in ["hours","days","weeks","months"]
+				option(value="#{unit}", ng-model="bounce.units") #{unit}
+
+	div.form-group
+		label.control-label.col-sm-2(for="topic") Remind me of:
+		div.col-sm-10
+			input#topic.form-control(type="text", placeholder="bounce topic", name="topic", ng-model="bounce.topic")
+	
+	div.form-group
+		label.control-label(for="email") Remind me to:
+		input#email.form-control(type="email", placeholder="your email", name="email", ng-model="bounce.email", required)
+		span(ng-show="newBounceForm.email.$invalid && newBounceForm.submitted")
+			span email not accepted 
+
+	h3 Your bounce will be set for				
+	h2: strong#bounceTimer xxx
+
+	<button type="submit" class="button radius">Submit</button>
+	
+
