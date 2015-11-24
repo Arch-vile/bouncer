@@ -1,11 +1,7 @@
 'use strict';
 
 angular.module('bouncerApp')
-	.controller('CreateCtrl', function($scope, $http, socket) {
-		$scope.foo = 'bar';
-		socket.syncUpdates('zeta', $scope.foo);
-		$http.get('/api/things');
-
+	.controller('CreateCtrl', ['$scope', '$http', '$state', function($scope, $http, $state) {
 		$scope.bounce = {};
 		$scope.bounce.amount = '1';
 		$scope.bounce.unit = 'days';
@@ -16,11 +12,10 @@ angular.module('bouncerApp')
 				$scope.bounce.moment = $scope.calculateMoment().format();
 				$http.post('/api/bounce/new', $scope.bounce)
 					.then(function(response) {
-						console.log('It WAS SUCCESS');
-						console.log(response);
+						$state.go('view', {
+							token: response.data.token
+						});
 					}, function(response) {
-						console.log('It WAS FAILURE');
-						console.log(response);
 						$scope.errorFlash = 'Alas! Server is not co-operating with your request: ' + response.data;
 					});
 
@@ -32,4 +27,4 @@ angular.module('bouncerApp')
 		};
 
 
-	});
+	}]);
