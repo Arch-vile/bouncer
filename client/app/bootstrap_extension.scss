@@ -15,14 +15,14 @@
   .text-sm-justify { text-align: justify; }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .text-md-left { text-align: left; }
   .text-md-right { text-align: right; }
   .text-md-center { text-align: center; }
   .text-md-justify { text-align: justify; }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1200px) {
   .text-lg-left { text-align: left; }
   .text-lg-right { text-align: right; }
   .text-lg-center { text-align: center; }
