@@ -12,3 +12,7 @@ div.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl')
       ul.nav.navbar-nav
         li(ng-repeat='item in menu', ng-class='{active: isActive(item.link)}')
           a(ng-href='{{item.link}}') {{item.title}}
+.container(ng-show="errorFlash")
+    .row
+      .col-sm-12.alert.alert-danger
+        span {{errorFlash}}

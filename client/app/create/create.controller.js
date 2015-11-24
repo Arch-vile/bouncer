@@ -13,12 +13,23 @@ angular.module('bouncerApp')
 		$scope.submit = function() {
 			$scope.newBounceForm.hadErrors = $scope.newBounceForm.$invalid;
 			if ($scope.newBounceForm.$valid) {
+				$scope.bounce.moment = $scope.calculateMoment().format();
+				$http.post('/api/bounce/new', $scope.bounce)
+					.then(function(response) {
+						console.log('It WAS SUCCESS');
+						console.log(response);
+					}, function(response) {
+						console.log('It WAS FAILURE');
+						console.log(response);
+						$scope.errorFlash = 'Alas! Server is not co-operating with your request: ' + response.data;
+					});
 
 			}
 		};
 
 		$scope.calculateMoment = function() {
-			return moment().add($scope.bounce.amount, $scope.bounce.unit).calendar();
+			return moment().add($scope.bounce.amount, $scope.bounce.unit);
 		};
+
 
 	});
