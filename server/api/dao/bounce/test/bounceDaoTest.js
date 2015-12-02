@@ -27,6 +27,12 @@ describe('bounce.dao', function() {
 		}
 	};
 
+	var dateTimeMock = {
+		currentDateTime: function() {
+			return new Date('2016-12-31T00:00:00+00:00');
+		}
+	};
+
 	before(function() {
 		mockery.enable({
 			useCleanCache: true
@@ -36,6 +42,7 @@ describe('bounce.dao', function() {
 		mockery.registerAllowable('log4js');
 		mockery.registerAllowable('crypto');
 		mockery.registerAllowable('../bounce.dao');
+		mockery.registerMock('../../utils/dateTimeProvider', dateTimeMock);
 		bounceDao = require('../bounce.dao');
 	});
 
@@ -172,6 +179,74 @@ describe('bounce.dao', function() {
 			// Then: error returned
 			should.exist(err);
 			should.not.exist(doc);
+		});
+
+	});
+
+	describe('getPending()', function() {
+
+		it('should search by date and active', function() {
+
+			// Capture find
+			var search;
+			var options;
+			collectionMock.find = function(_search, _options, next) {
+				search = _search;
+				options = _options;
+			};
+
+			// When: Get pending
+			bounceDao.getPending(function(err, doc) {});
+
+			// Then: Search by date and active
+			search.should.eql({
+				$and: [{
+					moment: {
+						$lt: new Date('2016-12-31T00:00:00+00:00')
+					}
+				}, {
+					active: true
+				}]
+			});
+
+			// And: No options
+			options.should.eql({});
+		});
+
+		it('should return results', function() {
+
+			// Given: 
+			collectionMock.find = function(_search, _options, next) {
+				next(null, ['a', 'b']);
+			};
+
+			// When: Get pending
+			var docs;
+			bounceDao.getPending(function(err, _docs) {
+				docs = _docs;
+			});
+
+			// Then: Found are returned
+			docs.should.eql(['a', 'b']);
+		});
+
+		it('should return error if db error', function() {
+
+			// Given: 
+			collectionMock.find = function(_search, _options, next) {
+				next(new Error("some error"));
+			};
+
+			// When: Get pending
+			var err, docs;
+			bounceDao.getPending(function(_err, _docs) {
+				docs = _docs;
+				err = _err;
+			});
+
+			// Then: Error is returned
+			should.exist(err);
+			should.not.exist(docs);
 		});
 
 	});
