@@ -1,0 +1,28 @@
+block content
+	p Hear! Hear!
+	h1 Be reminded: #{topic}
+
+	h2 If you feel lazy, bounce it back with the following quick links
+	br
+	a(href='#{appURL}/defer/#{token}?amount=2&units=hours') Defer for two hours
+	br
+	a(href='#{appURL}/defer/#{token}?amount=4&units=hours') Defer for four hours
+	br
+	a(href='#{appURL}/defer/#{token}?amount=1&units=days') Defer for one day
+	br
+	a(href='#{appURL}/defer/#{token}?amount=2&units=days') Defer for two days
+	br
+	a(href='#{appURL}/defer/#{token}?amount=1&units=weeks') Defer for one week
+	br
+	a(href='#{appURL}/defer/#{token}?amount=2&units=weeks') Defer for two weeks
+	br
+	a(href='#{appURL}/defer/#{token}?amount=1&units=months') Defer for one month
+	br
+	a(href='#{appURL}/defer/#{token}?amount=2&units=months') Defer for two months
+	br
+	br
+	hr
+	p.
+		This email was sent from 
+		#[a(href='#{appURL}') Bouncer].
+		If this was unexpected, you probably just forgot the whole thing, which proves our existence.
