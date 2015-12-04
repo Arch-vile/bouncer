@@ -44,3 +44,11 @@ server.listen(config.port, config.ip, function() {
 
 // Expose app
 exports = module.exports = app;
+
+// Start email sending job
+var emailSender = require('./batch/email');
+var CronJob = require('cron').CronJob;
+var job = new CronJob('0 * * * * *', function() {
+	emailSender.run();
+});
+job.start();
