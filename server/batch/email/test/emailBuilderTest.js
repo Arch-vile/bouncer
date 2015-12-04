@@ -18,6 +18,7 @@ describe('emailBuilder', function() {
 		mockery.enable();
 		mockery.warnOnUnregistered(false);
 		mockery.registerMock('../../config/environment', configMock);
+		mockery.registerAllowable('../emailBuilder');
 		builder = require('../emailBuilder');
 	});
 

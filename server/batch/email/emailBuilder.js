@@ -12,7 +12,7 @@ exports.build = function(bounce, next) {
 		token: bounce.token
 	};
 
-	jade.renderFile('bounceEmailTemplate.jade', options, function(err, html) {
+	jade.renderFile('server/batch/email/bounceEmailTemplate.jade', options, function(err, html) {
 		if (err) {
 			console.error("Could not render email content: ", err);
 			next(err);
