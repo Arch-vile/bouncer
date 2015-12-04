@@ -28,6 +28,15 @@ exports.create = function(bounce, next) {
 	});
 };
 
+
+exports.update = function(bounce, next) {
+	db.getCollection('bounces').update({
+		token: bounce.token
+	}, bounce, function(err, status) {
+		next(err, bounce);
+	});
+};
+
 exports.getPending = function(next) {
 
 	db.getCollection('bounces').find({

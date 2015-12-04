@@ -1,7 +1,7 @@
 'use strict';
 
 var should = require('should');
-var assert = require('assert');
+var assert = require('chai').assert;
 var mockery = require('mockery');
 
 describe('bounce.dao', function() {
@@ -179,6 +179,66 @@ describe('bounce.dao', function() {
 			// Then: error returned
 			should.exist(err);
 			should.not.exist(doc);
+		});
+
+	});
+
+	describe('update()', function() {
+
+		it('should update by token', function(done) {
+			// Given: Validate search term
+			collectionMock.update = function(search, bounce, next) {
+				assert.deepEqual(search, {
+					token: validBounce.token
+				});
+				done();
+			};
+
+			// When: Updated
+			bounceDao.update(validBounce);
+		});
+
+		it('should update with given bounce', function(done) {
+
+			// Given: Validate bounce to update
+			collectionMock.update = function(search, bounce, next) {
+				assert.deepEqual(bounce, validBounce);
+				done();
+			};
+
+			// When: Updated
+			bounceDao.update(validBounce);
+		});
+
+		it('callbacks with updated bounce', function(done) {
+
+			// Given: Update ok
+			collectionMock.update = function(search, bounce, next) {
+				next(null, "ok");
+			};
+
+			// When: Updated
+			bounceDao.update(validBounce, function(err, updated) {
+				assert.deepEqual(updated, validBounce);
+				assert.notOk(err);
+				done();
+			});
+
+		});
+
+		it('callbacks error if dao error', function(done) {
+
+			// Given: Update fails
+			collectionMock.update = function(search, bounce, next) {
+				next(new Error("Some error"), "fails");
+			};
+
+			// When: Updated throws error
+			bounceDao.update(validBounce, function(err, updated) {
+				assert.ok(err);
+				done();
+			});
+
 		});
 
 	});
