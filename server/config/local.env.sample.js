@@ -6,9 +6,9 @@
 // You will need to set these on the server you deploy to.
 
 module.exports = {
-  DOMAIN:           'http://localhost:9000',
-  SESSION_SECRET:   'bouncer-secret',
-
-  // Control debug level for modules using visionmedia/debug
-  DEBUG: ''
+	DOMAIN: 'http://localhost:9000',
+	SESSION_SECRET: 'bouncer-secret',
+	SENDGRID_APIKEY: 'set key here',
+	// Control debug level for modules using visionmedia/debug
+	DEBUG: ''
 };

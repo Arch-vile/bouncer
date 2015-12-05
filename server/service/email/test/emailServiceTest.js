@@ -35,22 +35,15 @@ describe('emailService', function() {
 
 	describe('send()', function() {
 
-		it('should pass fields to sendGrid', function() {
-
-			// Given: Message to send
-			var message = {
-				to: 'toAddress',
-				subject: 'subject here',
-				html: 'html content'
-			};
+		it('should create email', function() {
 
 			// When: Email is sent
-			service.send(message);
+			service.send('subject here', 'html content', 'toAddress');
 
 			// Then: Fields are passed forward
-			captureEmail.to.should.equal(message.to);
-			captureEmail.subject.should.equal(message.subject);
-			captureEmail.html.should.equal(message.html);
+			captureEmail.to.should.equal('toAddress');
+			captureEmail.subject.should.equal('subject here');
+			captureEmail.html.should.equal('html content');
 		});
 
 		it('should augment email', function() {
@@ -72,7 +65,7 @@ describe('emailService', function() {
 			};
 
 			// When: Email is sent
-			service.send({}, function(err) {
+			service.send('subject', 'message', 'to', function(err) {
 				// Then: Callback without errors
 				should.not.exist(err);
 				done();
@@ -86,7 +79,7 @@ describe('emailService', function() {
 			};
 
 			// When: Email is sent
-			service.send({}, function(err) {
+			service.send('subject', 'message', 'to', function(err) {
 				// Then: Error callback called
 				should.exist(err);
 				done();

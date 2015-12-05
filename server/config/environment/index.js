@@ -28,7 +28,7 @@ var all = {
   seedDB: false,
 
   // Sendgrid API key
-  sendgridAPIKey: process.env.sendgridAPIKey,
+  sendgridAPIKey: process.env.SENDGRID_APIKEY,
 
   // Secret for session, you will want to change this and make it an environment variable
   secrets: {

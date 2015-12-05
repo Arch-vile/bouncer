@@ -37,6 +37,11 @@ exports.update = function(bounce, next) {
 	});
 };
 
+exports.deactivate = function(bounce, next) {
+	bounce.active = false;
+	exports.update(bounce, next);
+}
+
 exports.getPending = function(next) {
 
 	db.getCollection('bounces').find({

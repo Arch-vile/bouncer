@@ -10,6 +10,7 @@ describe('bounce.dao', function() {
 		topic: 'some topic',
 		moment: new Date('2016-10-12T22:10:20+03:00'),
 		email: 'john.doe@cia.com',
+		active: true,
 		token: '1234567890123456789012345678901234567890'
 	}
 
@@ -241,6 +242,18 @@ describe('bounce.dao', function() {
 
 		});
 
+	});
+
+	describe('deactivate', function() {
+
+		it('should deactivate the bounce', function() {
+
+			// When: Deactivate
+			bounceDao.deactivate(validBounce, function() {});
+
+			// Then:
+			assert.isFalse(validBounce.active);
+		});
 	});
 
 	describe('getPending()', function() {

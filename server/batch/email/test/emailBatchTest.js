@@ -9,29 +9,31 @@ describe('emailBatch', function() {
 	var batch;
 
 	var pendingBounce1 = {
-		id: 1
+		email: 'email1',
+		topic: 'topic1'
 	};
 	var pendingBounce2 = {
-		id: 2
+		email: 'email2',
+		topic: 'topic2'
 	};
 
 	var daoMock = {
 		getPending: function(next) {
 			next(null, [pendingBounce1, pendingBounce2]);
+		},
+		deactivate: function(bounce, next) {
+			bounce.active = false;
+			next(null, bounce);
 		}
 	};
 
 	var emailBuilderMock = {
 		build: function(bounce, next) {
-			next(null, 'html for ' + bounce.id);
+			next(null, 'html for ' + bounce.topic);
 		}
 	};
 
-	var emailServiceMock = {
-		send: function(message, next) {
-			next(null);
-		}
-	};
+	var emailServiceMock = {};
 
 	after(function() {
 		mockery.disable();
@@ -50,23 +52,50 @@ describe('emailBatch', function() {
 		batch = require('../emailBatch');
 	});
 
+	beforeEach(function() {
+		emailServiceMock.send = function(topic, message, to, next) {
+			next(null);
+		};
+	});
+
 	describe('sendPending()', function() {
 
-		it('send email for pending', function() {
+		it('should send email for pending', function() {
 			// Given: Capture sent emails
 			var emails = [];
-			emailServiceMock.send = function(message, next) {
-				emails.push(message);
+			emailServiceMock.send = function(subject, message, to, next) {
+				emails.push({
+					subject: subject,
+					message: message,
+					to: to
+				});
 			}
 
 			// When:
 			batch.run();
 
-			// Then:
-			assert.include([1, 2, 3], 3, 'array contains value');
-			assert.include(emails, 'html for 1');
-			assert.include(emails, 'html for 2');
+			// Then: Proper emails sent
+			assert.include(emails, {
+				subject: 'topic1',
+				message: 'html for topic1',
+				to: 'email1'
+			});
+			assert.include(emails, {
+				subject: 'topic2',
+				message: 'html for topic2',
+				to: 'email2'
+			});
+			assert.lengthOf(emails, 2);
 
+		});
+
+		it('should set sent bounces inactive', function() {
+			// When:
+			batch.run();
+
+			// Then: Bounces are set inactive
+			assert.isFalse(pendingBounce1.active);
+			assert.isFalse(pendingBounce2.active);
 		});
 
 		it('handle error in dao', function() {
