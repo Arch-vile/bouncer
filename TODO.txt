@@ -1,0 +1,3 @@
+* all tests should reset mocks at the beforeEach as otherwise there is interference between tests
+* Error handling in emailbatch
+* General error handling to stach errors
