@@ -678,8 +678,8 @@ module.exports = function(grunt) {
         'injector:sass',
         'concurrent:test',
         'injector',
-        'autoprefixer',
-        'karma'
+        'autoprefixer' //,
+        //'karma'
       ]);
     } else if (target === 'e2e') {
       return grunt.task.run([
