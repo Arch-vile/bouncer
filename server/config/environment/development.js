@@ -8,5 +8,7 @@ module.exports = {
 		uri: 'mongodb://bouncer:DJas7IWUY9CD@ds027509.mongolab.com:27509/bouncer'
 	},
 
-	seedDB: true
+	seedDB: true,
+
+	emailLinkTarget: 'http://somestrangeUrlForNow'
 };

@@ -25,5 +25,9 @@ exports.build = function(bounce, next) {
 
 
 function getAppUrl() {
-	return config.emailLinkTarget;
+	if (!config.emailLinkTarget) {
+		throw new Error("config.emailLinkTarget not set")
+	} else {
+		return config.emailLinkTarget;
+	}
 }

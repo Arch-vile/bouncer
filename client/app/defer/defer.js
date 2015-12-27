@@ -5,7 +5,7 @@ angular.module('bouncerApp')
 
 		$stateProvider
 			.state('defer', {
-				url: '/defer?token&amount&units',
+				url: '/defer/:token?amount&units',
 				controller: 'DeferCtrl'
 			});
 	});
