@@ -2,7 +2,7 @@
 
 var validator = require('validator');
 var bounceDao = require('../../dao/bounce');
-var dateTimeProvider = require('../../utils/dateTimeProvider');
+var bounceService = require('../../../service/bounce/bounceService');
 
 exports.show = function(req, res) {
 	var token = req.params.token;
@@ -77,7 +77,6 @@ exports.defer = function(req, res) {
 		return res.status(400).send('amount needs to be between 1 and 30');
 	}
 
-
 	bounceDao.findByToken(token, function(err, doc) {
 		if (err) {
 			return res.status(500).send('Ouch! Internal error');
@@ -85,12 +84,10 @@ exports.defer = function(req, res) {
 			return res.status(404).send('Bounce not found');
 		}
 
-		doc.moment = dateTimeProvider.defer(amount, units).valueOf();
-		bounceDao.update(doc, function(err, updated) {
+		bounceService.defer(doc, amount, units, function(err, updated) {
 			if (err) {
 				return res.status(500).send('Ouch! Internal error');
 			}
-
 			return res.json(updated);
 		});
 

@@ -18,12 +18,7 @@ describe('bounceEndpoint', function() {
 	var endpoint;
 
 	var daoMock = {};
-
-	var dateTimeMock = {
-		currentDateTime: function() {
-			return new Date('2016-12-31T22:10:20+03:00');
-		}
-	};
+	var serviceMock = {};
 
 	before(function() {
 		mockery.enable({
@@ -31,9 +26,10 @@ describe('bounceEndpoint', function() {
 		});
 		mockery.enable();
 		mockery.registerMock('../../dao/bounce', daoMock);
-		mockery.registerMock('../../utils/dateTimeProvider', dateTimeMock);
+		mockery.registerMock('../../../service/bounce/bounceService', serviceMock);
 		mockery.registerAllowable('../bounceEndpoint');
 		mockery.registerAllowable('validator');
+		mockery.registerAllowable('crypto');
 		mockery.registerAllowable('querystring');
 		endpoint = require('../bounceEndpoint');
 	});
@@ -328,38 +324,52 @@ describe('bounceEndpoint', function() {
 		});
 
 
-		it('should update with deferred time', function() {
+		it('should call service to defer', function(done) {
 
 			// Given: Bounce is found
 			daoMock.findByToken = function(token, next) {
 				next(null, validBounce);
 			};
 
-			// Given: Deferred dateTime
-			dateTimeMock.defer = function(amount, units) {
+			// Given: Verify service call
+			serviceMock.defer = function(bounce, amount, units, next) {
 				assert.equal(amount, 2);
 				assert.equal(units, 'days');
-				return new Date('2017-10-22T22:10:20+03:00');
+				assert.deepEqual(bounce, validBounce);
+				done();
 			}
 
-			// Given: Spy updated bounce
-			var deferred;
-			daoMock.update = function(toDefer, next) {
-				deferred = toDefer;
-				return next(null, toDefer);
+			// When: Deferred
+			endpoint.defer(putRequest, response);
+
+		});
+
+		it('should return updated bounce JSON', function() {
+
+			// Given: Bounce is found
+			daoMock.findByToken = function(token, next) {
+				next(null, validBounce);
+			};
+
+			// Given: Deferred bounce callback
+			serviceMock.defer = function(bounce, amount, units, next) {
+				next(null, {
+					value: 1 
+				});
 			};
 
 			// When: Deferred
 			endpoint.defer(putRequest, response);
 
-			// Then: Moment of the updated bounce should be deferred
-			assert.equal(deferred.moment.valueOf(), new Date('2017-10-22T22:10:20+03:00').valueOf());
-
-			// And: Updated bounce returned as JSON
+			// Then: Updated bounce returned as JSON
 			response.statusCode.should.equal(200);
-			response._getData().should.equal(JSON.stringify(deferred));
+			response._getData().should.equal(JSON.stringify({
+				value: 1 
+			}));
+
 
 		});
+
 
 	});
 });
