@@ -16,8 +16,7 @@
       "uirouter": true,
       "bootstrap": true,
       "uibootstrap": true,
-      "socketio": true,
-      "mongoose": true
+      "socketio": true
     }
   },
   "generator-ng-component": {
