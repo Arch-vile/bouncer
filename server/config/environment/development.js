@@ -5,10 +5,10 @@
 module.exports = {
 	// MongoDB connection options
 	mongo: {
-		uri: 'mongodb://bouncer:DJas7IWUY9CD@ds027509.mongolab.com:27509/bouncer'
+		uri: process.env.MONGOLAB_URI
 	},
 
-	seedDB: true,
+	seedDB: false,
 
 	emailLinkTarget: 'http://somestrangeUrlForNow'
 };

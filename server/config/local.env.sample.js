@@ -9,6 +9,7 @@ module.exports = {
 	DOMAIN: 'http://localhost:9000',
 	SESSION_SECRET: 'bouncer-secret',
 	SENDGRID_APIKEY: 'set key here',
+	MONGOLAB_URI: 'uri to mongolab',
 	// Control debug level for modules using visionmedia/debug
 	DEBUG: ''
 };
