@@ -36,6 +36,7 @@ describe('bounceEndpoint', function() {
 
 	after(function() {
 		mockery.disable();
+		mockery.deregisterAll();
 	});
 
 	beforeEach(function() {

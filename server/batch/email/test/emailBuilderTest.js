@@ -22,6 +22,11 @@ describe('emailBuilder', function() {
 		builder = require('../emailBuilder');
 	});
 
+	after(function() {
+		mockery.disable();
+		mockery.deregisterAll();
+	});
+
 	describe('build', function() {
 
 		var bounce = {

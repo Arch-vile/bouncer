@@ -29,6 +29,7 @@ describe('bounceService', function() {
 
 	after(function() {
 		mockery.disable();
+		mockery.deregisterAll();
 	});
 
 

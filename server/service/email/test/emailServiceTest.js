@@ -26,6 +26,11 @@ describe('emailService', function() {
 		service = require('../emailService');
 	});
 
+	after(function() {
+		mockery.disable();
+		mockery.deregisterAll();
+	});
+
 	beforeEach(function() {
 		captureEmail = null;
 		sendGridMock.send = function(email, next) {

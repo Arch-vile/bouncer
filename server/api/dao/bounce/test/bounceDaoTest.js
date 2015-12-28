@@ -49,6 +49,7 @@ describe('bounce.dao', function() {
 
 	after(function() {
 		mockery.disable();
+		mockery.deregisterAll();
 	});
 
 	beforeEach(function() {
