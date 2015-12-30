@@ -21,6 +21,7 @@ exports.findByToken = function(token, next) {
 exports.create = function(bounce, next) {
 	db.getCollection('bounces').insert(bounce, function(err, doc) {
 		if (err) {
+			logger.error('Error inserting to db: ' + err);
 			next(err);
 		} else {
 			next(null, doc);
