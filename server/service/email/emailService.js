@@ -1,7 +1,7 @@
 'use strict';
 
-var config = require('../../config/environment');
-var sendgrid = require('sendgrid')(config.sendgridAPIKey);
+var properties = require('../../config/propertyProvider');
+var sendgrid = require('sendgrid')(properties.demand('sendgridAPIKey'));
 
 
 exports.send = function(subject, message, to, next) {

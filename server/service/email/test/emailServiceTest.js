@@ -22,7 +22,7 @@ describe('emailService', function() {
 		});
 		mockery.enable();
 		mockery.registerMock('sendgrid', sendGridMockO);
-		mockery.registerMock('../../config/environment', configMock);
+		mockery.registerMock('../../config/propertyProvider', configMock);
 		service = require('../emailService');
 	});
 
