@@ -8,7 +8,11 @@ describe('emailBuilder', function() {
 
 	var builder;
 	var configMock = {
-		emailLinkTarget: 'http://theapp.com'
+		demand: function(key) {
+			assert.equal(key, 'domain');
+			return 'http://theapp.com';
+		}
+
 	};
 
 	before(function() {
@@ -17,7 +21,7 @@ describe('emailBuilder', function() {
 		});
 		mockery.enable();
 		mockery.warnOnUnregistered(false);
-		mockery.registerMock('../../config/environment', configMock);
+		mockery.registerMock('../../config/propertyProvider', configMock);
 		mockery.registerAllowable('../emailBuilder');
 		builder = require('../emailBuilder');
 	});

@@ -3,6 +3,7 @@
 var dao = require('../../api/dao/bounce');
 var emailService = require('../../service/email');
 var builder = require('./emailBuilder');
+var logger = require('log4js').getLogger('emailBatch');
 
 exports.run = function() {
 	console.info('Sending reminders');
@@ -10,18 +11,19 @@ exports.run = function() {
 		if (err) {
 			// TODO: log error and alert
 		} else {
-			console.info('Sending ' + pending.length + ' reminders');
+			logger.info('Sending ' + pending.length + ' reminders');
 			pending.forEach(function(bounce) { 
 				builder.build(bounce, function(err, html) {
 					if (err) {
 						// TODO: log error and alert
 					} else {
+						logger.trace('Email body: ' + html);
 						emailService.send(bounce.topic, html, bounce.email, function(err) {
 							if (err) {
 								// TODO: log error and alert
 								console.error("Error sending email: " + err);
 							} else {
-								console.info("Email sent to: " + bounce.email);
+
 								dao.deactivate(bounce, function(err, updated) {
 									if (err) {
 										// TODO: log error and alert

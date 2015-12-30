@@ -1,14 +1,14 @@
 'use strict';
 
 var jade = require('jade');
-var config = require('../../config/environment');
+var properties = require('../../config/propertyProvider');
 
 exports.build = function(bounce, next) {
 
 	var options = {
 		pretty: true,
 		topic: bounce.topic,
-		appURL: getAppUrl(),
+		appURL: properties.demand('domain'),
 		token: bounce.token
 	};
 
@@ -22,12 +22,3 @@ exports.build = function(bounce, next) {
 	});
 
 };
-
-
-function getAppUrl() {
-	if (!config.emailLinkTarget) {
-		throw new Error("config.emailLinkTarget not set")
-	} else {
-		return config.emailLinkTarget;
-	}
-}

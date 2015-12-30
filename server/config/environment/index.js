@@ -30,6 +30,8 @@ var all = {
   // Sendgrid API key
   sendgridAPIKey: process.env.SENDGRID_APIKEY,
 
+  domain: process.env.DOMAIN,
+
   // Secret for session, you will want to change this and make it an environment variable
   secrets: {
     session: 'bouncer-secret'

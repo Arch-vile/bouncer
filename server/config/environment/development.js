@@ -1,5 +1,7 @@
 'use strict';
 
+
+
 // Development specific configuration
 // ==================================
 module.exports = {
@@ -8,7 +10,5 @@ module.exports = {
 		uri: process.env.MONGOLAB_URI
 	},
 
-	seedDB: false,
-
-	emailLinkTarget: 'http://somestrangeUrlForNow'
+	seedDB: false
 };
