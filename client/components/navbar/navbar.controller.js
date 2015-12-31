@@ -6,7 +6,7 @@ angular.module('bouncerApp')
       'title': 'Home',
       'link': '/'
     }, {
-      'title': 'New',
+      'title': 'Create',
       'link': '/create'
     }];
 

@@ -4,12 +4,44 @@ header#banner.hero-unit
   .container
     h1 Bouncer
     p.lead Thou shalt not forget!
-    
+   
 
 .container
   .row
+    .col-xs-12
+      h1.page-header Quick guide
+  .row
+    ng-switch(on='guideStep')
+      .col-xs-12.text-xs-center(ng-switch-default)
+        .stepBox
+          span.glyphicon.glyphicon-pushpin
+          h3 Something to remember
+          p For example, did you promise your wife to clear the clogged sink during upcoming weekend? 
+      .col-xs-12(ng-switch-when='1')
+        .stepBox
+          span.glyphicon.glyphicon-edit
+          h3 Set your Bounce
+          p Define #[strong what] you want to be reminded of and #[strong when].
+      .col-xs-12(ng-switch-when='2')
+        .stepBox
+          span.glyphicon.glyphicon-envelope
+          h3 Be reminded
+          p We will send you #[strong email] reminder of your important thingy.
+      .col-xs-12(ng-switch-when='3')
+        .stepBox
+          span.glyphicon.glyphicon-ok
+          h3 Act
+          p #[strong Be a hero] and do what you were supposed to! Or if you feel lazy just #[strong bounce it back] to us using the #[strong quick links] in the reminder email.
+  .row
+    .col-xs-12.text-xs-center
+      ng-switch(on='guideStep')
+        button.btn-primary.btn(ng-switch-default,ng-click='nextStep()') Next 
+        a.btn-primary.btn(ng-switch-when='3',href='/create') Create your Bounce
+
+  .row
     .col-sm-12
-      h1.page-header Features:
+      h1.page-header Features
+
   .row
     .col-sm-12.list-group
         li.list-group-item
