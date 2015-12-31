@@ -724,4 +724,15 @@ module.exports = function(grunt) {
     'test',
     'build'
   ]);
+
+  grunt.registerTask('heroku', function(target) {
+
+    if (target === 'deploy') {
+      return grunt.task.run([
+        'build',
+        'buildcontrol:heroku'
+      ]);
+    }
+
+  });
 };
