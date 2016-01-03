@@ -225,6 +225,17 @@ describe('bounceEndpoint', function() {
 			response.statusCode.should.equal(400);
 		});
 
+		it('should return status 400 if parsing for date fails', function() {
+			// Given: Request with valid ISO date but invalid javascript date parse
+			postRequest.body.moment = '2009-W01-1';
+
+			// When: Requested
+			endpoint.create(postRequest, response);
+
+			// Then:
+			response.statusCode.should.equal(400);
+		});
+
 	});
 
 

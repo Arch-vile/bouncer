@@ -36,9 +36,12 @@ exports.create = function(req, res) {
 	if (!validator.isISO8601(moment)) {
 		return res.status(400).send('not a ISO8601 date');
 	}
+	if (isNaN(Date.parse(moment))) {
+		return res.status(400).send('not a valid date');
+	}
 
 	var bounce = {
-		moment: new Date(moment),
+		moment: new Date(Date.parse(moment)),
 		topic: topic,
 		email: email,
 		active: true,
