@@ -11,7 +11,7 @@ describe('bounceEndpoint', function() {
 
 	var response;
 
-	var validToken = '1234567890123456789012345678901234567890';
+	var validToken = 'a871d3c1088f891584ea4cf30428335e179050f1';
 
 	var validBounce;
 
@@ -54,13 +54,15 @@ describe('bounceEndpoint', function() {
 
 	describe('show()', function() {
 
-		var getRequest = httpMocks.createRequest({
-			method: 'GET',
-			params: {
-				token: validToken
-			}
+		var getRequest;
+		beforeEach(function() {
+			getRequest = httpMocks.createRequest({
+				method: 'GET',
+				params: {
+					token: validToken
+				}
+			});
 		});
-
 
 		it('should return bounce as json', function() {
 			// Given: Bounce is returned
@@ -88,6 +90,30 @@ describe('bounceEndpoint', function() {
 
 			// Then: All ok
 
+		});
+
+		it('should return status 400 for bad token (invalid elements)', function() {
+
+			// Given: Invalid token is passed in request
+			getRequest.params.token = 'axxxd3c1088f891584ea4cf30428335e179050f1';
+
+			// When: requested
+			endpoint.show(getRequest, response);
+
+			// Then: Error is returned
+			response.statusCode.should.equal(400);
+		});
+
+		it('should return status 400 for bad token (invalid length)', function() {
+
+			// Given: Invalid token is passed in request
+			getRequest.params.token = '30428335e179050f1';
+
+			// When: requested
+			endpoint.show(getRequest, response);
+
+			// Then: Error is returned
+			response.statusCode.should.equal(400);
 		});
 
 		it('should return status 500 if internal error ', function() {

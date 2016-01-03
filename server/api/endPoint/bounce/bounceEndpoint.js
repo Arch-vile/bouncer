@@ -7,6 +7,10 @@ var bounceService = require('../../../service/bounce/bounceService');
 exports.show = function(req, res) {
 	var token = req.params.token;
 
+	if (!validToken(token)) {
+		return res.status(400).send('bad token');
+	}
+
 	bounceDao.findByToken(token, function(err, bounce) {
 		if (err) {
 			return res.status(500).send('Ouch! Internal error');
@@ -101,4 +105,8 @@ exports.defer = function(req, res) {
 function createToken() {
 	var buf = require('crypto').randomBytes(20);
 	return buf.toString('hex');
+}
+
+function validToken(token) {
+	return token.match(/^[0-9a-f]{40}$/);
 }
