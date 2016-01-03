@@ -30,7 +30,7 @@ form.form-horizontal(role="form", name="newBounceForm",novalidate, ng-submit="su
 					placeholder="bounce topic", 
 					name="topic", 
 					ng-model="bounce.topic", 
-					required, ng-minlength=4, ng-maxlength=120)
+					required, ng-minlength=1, ng-maxlength=120)
 				span.help-block(ng-show="newBounceForm.hadErrors && newBounceForm.topic.$error.required") Required value
 				span.help-block(ng-show="newBounceForm.hadErrors && newBounceForm.topic.$error.minlength") Too short
 				span.help-block(ng-show="newBounceForm.hadErrors && newBounceForm.topic.$error.maxlength") Too long

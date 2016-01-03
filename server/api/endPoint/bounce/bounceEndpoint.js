@@ -33,7 +33,7 @@ exports.create = function(req, res) {
 		return res.status(400).send('bad email');
 	}
 
-	if (!validator.isLength(topic, 4, 120)) {
+	if (!validator.isLength(topic, 1, 120)) {
 		return res.status(400).send('bad topic');
 	}
 

@@ -230,8 +230,8 @@ describe('bounceEndpoint', function() {
 		});
 
 		it('it should return status 400 for invalid topic', function() {
-			// Given: Request with illegal email
-			postRequest.body.topic = 'a';
+			// Given: Request with illegal topic
+			postRequest.body.topic = '';
 
 			// When: Requested
 			endpoint.create(postRequest, response);
