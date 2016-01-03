@@ -69,7 +69,7 @@ exports.defer = function(req, res) {
 	var units = req.body.units;
 	var amount = req.body.amount;
 
-	if (!validator.isLength(token, 40, 40)) {
+	if (!validToken(token)) {
 		return res.status(400).send('bad token');
 	}
 
