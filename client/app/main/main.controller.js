@@ -8,7 +8,6 @@ angular.module('bouncerApp')
 			$scope.guideStep = ($scope.guideStep + 1) % 4;
 		};
 
-
 		$scope.$on('$destroy', function() {
 
 		});

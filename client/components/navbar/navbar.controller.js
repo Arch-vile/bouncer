@@ -8,6 +8,9 @@ angular.module('bouncerApp')
     }, {
       'title': 'Create',
       'link': '/create'
+    }, {
+      'title': 'Contact',
+      'link': '/contact'
     }];
 
     $scope.isCollapsed = true;
