@@ -50,5 +50,7 @@ form.form-horizontal(role="form", name="newBounceForm",novalidate, ng-submit="su
 
 		.row
 			.col-sm-8.col-sm-offset-4
-				button.btn-primary.btn(type="submit") Set bounce for {{calculateMoment().calendar()}}
+				button.btn-primary.btn(type="submit",ng-disabled="submitting") Set bounce for {{calculateMoment().calendar()}}
+				img(src="assets/images/ajax-loader.gif", ng-show="submitting")
+
 

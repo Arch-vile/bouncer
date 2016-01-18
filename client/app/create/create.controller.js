@@ -7,8 +7,9 @@ angular.module('bouncerApp')
 		$scope.bounce.unit = 'days';
 
 		$scope.submit = function() {
-			$scope.newBounceForm.hadErrors = $scope.newBounceForm.$invalid;
+
 			if ($scope.newBounceForm.$valid) {
+				$scope.submitting = true;
 				$scope.bounce.moment = $scope.calculateMoment().format();
 				$http.post('/api/bounce/new', $scope.bounce)
 					.then(function(response) {
@@ -16,10 +17,14 @@ angular.module('bouncerApp')
 							token: response.data.token
 						});
 					}, function(response) {
-						$scope.errorFlash = 'Alas! Server is not co-operating with your request: ' + response.data;
+						$scope.errorFlash = 'Alas! Server is not co-operating with your request';
+						$scope.submitting = false;
 					});
 
+			} else {
+				$scope.newBounceForm.hadErrors = true;
 			}
+
 		};
 
 		$scope.calculateMoment = function() {
